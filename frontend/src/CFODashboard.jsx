@@ -16,7 +16,8 @@ import CompetitorAnalysis from './CompetitorAnalysis';
 const formatCurrency = (val) => val?.toLocaleString(undefined, {maximumFractionDigits:0});
 const formatBillion = (val) => `$${(val / 1000)?.toFixed(1)}B`;
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const envUrl = import.meta.env.VITE_API_URL;
+const API_BASE_URL = envUrl !== undefined ? envUrl : 'http://localhost:8000';
 
 export default function CFODashboard() {
   const [selectedModule, setSelectedModule] = useState(1);
