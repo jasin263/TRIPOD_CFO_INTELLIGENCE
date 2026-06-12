@@ -36,6 +36,7 @@ def compare_financials(tickers: str, provider: str = "yfinance"):
 
 @router.get("/financials/{ticker}")
 def get_financials(ticker: str, provider: str = "yfinance"):
+    ticker = ticker.strip().upper()
     try:
         data = get_historical_data(ticker, provider)
         return {"status": "success", "data": data}
@@ -46,8 +47,9 @@ def get_financials(ticker: str, provider: str = "yfinance"):
 
 @router.post("/forecast")
 def create_forecast(req: ForecastRequest):
+    ticker = req.ticker.strip().upper()
     try:
-        data = get_historical_data(req.ticker, req.provider)
+        data = get_historical_data(ticker, req.provider)
         forecast = generate_forecast(data, req)
         return {"status": "success", "data": forecast}
     except DataValidationError as e:
