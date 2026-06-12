@@ -16,6 +16,8 @@ import CompetitorAnalysis from './CompetitorAnalysis';
 const formatCurrency = (val) => val?.toLocaleString(undefined, {maximumFractionDigits:0});
 const formatBillion = (val) => `$${(val / 1000)?.toFixed(1)}B`;
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 export default function CFODashboard() {
   const [selectedModule, setSelectedModule] = useState(1);
   const [selectedScenario, setSelectedScenario] = useState('base');
@@ -69,7 +71,7 @@ export default function CFODashboard() {
         const fetchPromises = [];
 
         fetchPromises.push(
-            fetch(`http://localhost:8000/api/financials/compare?tickers=${encodeURIComponent(ticker)}&provider=${provider}`)
+            fetch(`${API_BASE_URL}/api/financials/compare?tickers=${encodeURIComponent(ticker)}&provider=${provider}`)
             .then(res => res.json())
             .then(json => {
                 if(json.status === 'success') {
@@ -80,7 +82,7 @@ export default function CFODashboard() {
             .catch(e => console.error(e))
         );
 
-        const finPromise = fetch(`http://localhost:8000/api/financials/${primaryTicker}?provider=${provider}`)
+        const finPromise = fetch(`${API_BASE_URL}/api/financials/${primaryTicker}?provider=${provider}`)
             .then(res => res.json())
             .then(finJson => {
                 if(finJson.status !== 'success') throw new Error(finJson.detail || 'Failed to fetch financials');
@@ -246,7 +248,7 @@ export default function CFODashboard() {
         
         // Fetch macro
         try {
-           const macRes = await fetch(`http://localhost:8000/api/macro`);
+           const macRes = await fetch(`${API_BASE_URL}/api/macro`);
            const macJson = await macRes.json();
            if(macJson.status === 'success') {
                setSignals(macJson.data);
@@ -305,7 +307,7 @@ export default function CFODashboard() {
           dcfPrice: DCF.impliedPrice
       };
 
-      const res = await fetch(`http://localhost:8000/api/chat`, {
+      const res = await fetch(`${API_BASE_URL}/api/chat`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
